@@ -65,6 +65,10 @@ LIVESTREAM = 2
 ###########################################################
 
 
+def get_avg_ratio(total_ratio):
+    avg_ratio = total_ratio/4
+    return avg_ratio
+
 class graph_win(QWidget):
     def __init__(
         self,
@@ -89,6 +93,7 @@ class graph_win(QWidget):
         self.save_file = save_file
         self.board_id = get_board_id(data_type, hardware, model)
         self.board = board
+        self.avg_ab_ratio = 0
 
         if self.board:
             self.exg_channels = self.board.get_exg_channels()
@@ -191,6 +196,7 @@ class graph_win(QWidget):
 
     
     def update(self):
+        total_ratio = 0
         logger.debug("Graph window is updating")
 
         # this is data to be saved. It is only new data since our last call
@@ -268,12 +274,14 @@ class graph_win(QWidget):
                 0,
             )
             ab_ratio = self.get_ab_ratio(data[channel])
+            total_ratio += ab_ratio
             self.ab_history[count,-1] = ab_ratio
             self.curves[count].setData(self.ab_history[count])
             # print("ratio history", self.ab_history)
 
             # self.curves[count].setData(data[channel].tolist())
-
+        self.avg_ab_ratio = get_avg_ratio(total_ratio)
+        print("average ratio", self.avg_ab_ratio)
         self.curves[len(self.exg_channels)].setData(data[self.marker_channels].tolist())
         logger.debug(
             "Marker channel data was {}".format(data[self.marker_channels].tolist())
