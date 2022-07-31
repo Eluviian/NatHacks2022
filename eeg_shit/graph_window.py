@@ -6,6 +6,7 @@ import csv
 import logging
 import pdb
 import random
+from re import X
 import sys
 import time
 from dataclasses import dataclass
@@ -133,7 +134,7 @@ class graph_win(QWidget):
         self.cur_line = 0
         
         # init ab history variable
-        self.ab_history = np.zeros((self.chan_num,20))
+        self.ab_history = np.zeros((self.chan_num,50))
 
         self.graphWidget = pg.GraphicsLayoutWidget()
 
@@ -155,10 +156,11 @@ class graph_win(QWidget):
         self.curves = list()
         for i in range(self.chan_num + 1):
             p = self.graphWidget.addPlot(row=i, col=0)
-            p.showAxis("left", False)
+            p.showAxis("left", True)
             p.setMenuEnabled("left", False)
             p.showAxis("bottom", False)
             p.setMenuEnabled("bottom", False)
+            p.setYRange(0,1.5)
             if i == 0:
                 p.setTitle("TimeSeries Plot")
             self.plots.append(p)
@@ -168,8 +170,8 @@ class graph_win(QWidget):
     def get_ab_ratio(self, dataList):
         
         
-        fft_data = np.absolute(np.fft.fft(dataList)/len(dataList))
-        fft_freqs = np.fft.rfftfreq(len(dataList), 1/200)
+        fft_data = np.absolute(np.fft.fft(dataList))
+        fft_freqs = np.fft.rfftfreq(len(dataList), 1/250)
         
         # print("fft_data", fft_data)
         # print("fft_freqs", fft_freqs)
