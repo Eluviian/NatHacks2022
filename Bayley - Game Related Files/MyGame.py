@@ -8,6 +8,7 @@ python -m arcade.examples.sprite_move_animation
 """
 import arcade
 import random
+import time
 from PlayerCharacter import PlayerCharacter
 from EnemyCharacter import EnemyCharacter
 from global_vars import *
@@ -40,11 +41,16 @@ class MyGame(arcade.Window):
         self.enemy = EnemyCharacter()
         self.enemy.center_x = 300
         self.enemy.center_y = 200
-        self.enemy.scale = ENEMY_SCALING        
+        self.enemy.scale = ENEMY_SCALING
+        
+        self.total_chase_timer = 0
         
 
         self.background = arcade.load_texture("Maps\exit_room.png")
         self.room = 3
+        
+        self.music = None
+        self.play_song("audio\Closing-In_Looping.mp3")
         
         
     def on_draw(self):
@@ -124,15 +130,33 @@ class MyGame(arcade.Window):
                 
           
         if self.enemy.room == self.room:
-            self.chase_timer = 0
+            self.chase_timer = self.enemy_timer
             self.enemy.chasing_player = True
+            self.chase_distance = abs(self.enemy.center_x - self.player.center_x)
             
         if self.enemy.chasing_player == True:
+            self.total_chase_timer += 1
+            
+            #print(self.enemy_timer,self.chase_timer)
             if self.enemy.room == self.room:
                 self.enemy_pursue()
-            '''
-            elif self.enemy_timer == self.chase_timer + 50:
-                self.enemy.transfer_room(self.enemy.room,self.room)'''
+            
+            #player can lose the enemy after a while
+            elif self.total_chase_timer  >= 500 and self.chase_distance > 230:
+                self.enemy.chasing_player = False
+                print("chase over")
+                self.total_chase_timer = 0
+                self.enemy_timer = 0
+            
+            elif self.enemy_timer == self.chase_timer + 50 and self.chase_distance < 100:
+                #print("a")
+                chase_distance = abs(self.enemy.center_x - self.player.center_x)
+                self.enemy.transfer_room(self.enemy.room,self.room)
+                
+            elif self.enemy_timer == self.chase_timer + 200:
+                #print("a")
+                chase_distance = abs(self.enemy.center_x - self.player.center_x)
+                self.enemy.transfer_room(self.enemy.room,self.room)            
             
         
         
@@ -144,6 +168,9 @@ class MyGame(arcade.Window):
            
         
         self.enemy_timer += 1
+        #print(self.enemy.chasing_player)
+        print(self.enemy.room)
+        print(self.enemy_timer)
         self.background = arcade.load_texture(map_string)
         
 
@@ -159,7 +186,15 @@ class MyGame(arcade.Window):
         else:
             self.enemy.change_y = ENEMY_MOVEMENT_SPEED       
             
+    
+    
+    def play_song(self,song):
+        if self.music:
+            self.music.stop()
         
+        self.music = arcade.Sound(song, streaming = True)
+        self.current_player = self.music.play(MUSIC_VOLUME)
+        time.sleep(0.03)
 
 def main():
     """ Main function """

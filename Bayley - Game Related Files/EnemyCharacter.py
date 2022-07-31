@@ -67,39 +67,49 @@ class EnemyCharacter(arcade.Sprite):
         
         
     def transfer_room(self, starting_room, goal_room):
+        print(self.room, goal_room)
+        self.room = goal_room
         if starting_room == 0:
             if goal_room == 1:
-                pass
+                self.center_x = 493
+                self.center_y = HALLWAY_TOP - 1
             if goal_room == 2:
-                pass
+                self.center_x = 405
+                self.center_y = HALLWAY_TOP - 1
             if goal_room == 3:
-                pass
+                self.center_x = 189
+                self.center_y = HALLWAY_TOP - 1
         if starting_room == 1:
             if goal_room == 0:
-                pass
+                self.center_x = 278
+                self.center_y = HALLWAY_BOTTOM + 1
             if goal_room == 2:
-                pass
+                self.center_x = 1
         if starting_room == 2:
             if goal_room == 0:
-                pass
+                self.center_x = 393
+                self.center_y = HALLWAY_BOTTOM + 1
             if goal_room == 1:
-                pass
+                self.center_x = 1
             if goal_room == 3:
-                pass
+                self.center_x = 1
         if starting_room == 3:
             if goal_room == 0:
-                pass
+                self.center_x = 178
+                self.center_y = HALLWAY_BOTTOM + 1
             if goal_room == 2:
-                pass
+                self.center_x = SCREEN_WIDTH - 1
             if goal_room == 7:
-                pass
+                self.center_x = 1
         if starting_room == 7:
             if goal_room == 3:
-                pass
+                self.center_x = SCREEN_WIDTH - 1
             if goal_room == 8:
-                pass
+                self.center_x = 189
+                self.center_y = HALLWAY_TOP - 1
         if starting_room == 8:
             if goal_room == 7:
-                pass
+                self.center_x = 277
+                self.center_y = HALLWAY_BOTTOM + 1
         
         
