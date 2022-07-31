@@ -44,13 +44,18 @@ class MyGame(arcade.Window):
         self.enemy.scale = ENEMY_SCALING
         
         self.total_chase_timer = 0
+        self.continue_game = True
+        
+        self.broken_mirror = False
+        
         
 
         self.background = arcade.load_texture("Maps\exit_room.png")
-        self.room = 3
+        self.room = 7
         
         self.music = None
-        self.play_song("audio\Closing-In_Looping.mp3")
+        self.song = "audio\Closing-In_Looping.mp3"
+        self.play_song()
         
         
     def on_draw(self):
@@ -64,17 +69,27 @@ class MyGame(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(300,300,600,600,self.background)  
         
+        
+        
+        if self.room == 8:
+            if self.broken_mirror == False: 
+                unbroken_mirror_sprite = arcade.Sprite("images/before_mirror.png", scale=1.2, center_x = 535, center_y= 305)
+                unbroken_mirror_sprite.draw()
+            else:
+                broken_mirror_sprite = arcade.Sprite("images/after_mirror.png", scale = 1.2, center_x = 535, center_y = 305)
+                broken_mirror_sprite.draw()
+        
         #arcade.draw_lrtb_rectangle_filled(5,595,260,255,arcade.color.BLUSH)
         #arcade.draw_lrtb_rectangle_filled(5,595,150,145,arcade.color.BLUSH)
-
-        # Draw all the sprites.
-        self.player.draw()
-        if self.enemy.room == self.room:
-            self.enemy.draw()
-        
-        #arcade.draw_lrtb_rectangle_filled(178,204,272,260,arcade.color.BLUSH)
-        #arcade.draw_lrtb_rectangle_filled(387,427,140,100,arcade.color.BLUSH)
-        #arcade.draw_lrtb_rectangle_filled(176,202,272,260,arcade.color.BLUSH)
+        if self.continue_game:
+            # Draw all the sprites.
+            self.player.draw()
+            if self.enemy.room == self.room:
+                self.enemy.draw()
+            
+            #arcade.draw_lrtb_rectangle_filled(178,204,272,260,arcade.color.BLUSH)
+            #arcade.draw_lrtb_rectangle_filled(387,427,140,100,arcade.color.BLUSH)
+            #arcade.draw_lrtb_rectangle_filled(176,202,272,260,arcade.color.BLUSH)
         
         
         
@@ -107,16 +122,41 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+       
+        #check of player is caught
+        if arcade.check_for_collision(self.enemy,self.player) and self.room == self.enemy.room:
+            #end_game(False)
+            self.continue_game = False
+            self.background = arcade.load_texture("images\game_over.png")
 
         # Move the player
         self.player.update()
         self.enemy.update()
         
-        prev_room = self.room
+        self.prev_room = self.room
 
         # Update the players animation
         self.room = self.player.update_animation1(self.room)
         self.enemy.update_animation1()
+        
+        ##########broken mirror when unfocused
+        if self.enemy_timer >= 300 and self.room == 8 and self.player.center_y < HALLWAY_TOP - 25 and self.broken_mirror == False and self.continue_game:
+            self.broken_mirror = True
+            #play audio/glass_shatter.mp3
+            glass_shatter_sound = arcade.load_sound("audio/glass_shatter.mp3")
+            arcade.play_sound(glass_shatter_sound)
+            #print statement showing ratio
+        
+        ##########monster shows up when focused
+        #deactivate monster spawning automatically
+        #boolean to spawn moneter into next room player enters
+        #print statement showing ratio
+        #prevent this from happening again for a time limit
+        '''
+        if self.enemy_timer >= 200 and self.room != self.prev_room and self.enemy.chasing_player == False:
+            self.enemy.room = self.room '''
+            
+        
         
         
         if self.enemy_timer == 200:
@@ -127,9 +167,12 @@ class MyGame(arcade.Window):
             if self.room == 3 or self.room == 7 or self.room == 8:
                 self.enemy.room = 1
                 #print("enemy is in room "+str(self.enemy.room))
-                
+          
           
         if self.enemy.room == self.room:
+            if self.song != "audio\Horror-NeverLookBack.mp3":
+                self.song = "audio\Horror-NeverLookBack.mp3"
+                self.play_song()
             self.chase_timer = self.enemy_timer
             self.enemy.chasing_player = True
             self.chase_distance = abs(self.enemy.center_x - self.player.center_x)
@@ -168,10 +211,10 @@ class MyGame(arcade.Window):
            
         
         self.enemy_timer += 1
-        #print(self.enemy.chasing_player)
-        print(self.enemy.room)
-        print(self.enemy_timer)
-        self.background = arcade.load_texture(map_string)
+        if self.continue_game:
+            self.background = arcade.load_texture(map_string)
+            
+        self.prev_room = self.room
         
 
     def enemy_pursue(self):
@@ -186,15 +229,19 @@ class MyGame(arcade.Window):
         else:
             self.enemy.change_y = ENEMY_MOVEMENT_SPEED       
             
-    
-    
-    def play_song(self,song):
-        if self.music:
-            self.music.stop()
+    '''
+    def end_game(self,win):
+        self.con'''
         
-        self.music = arcade.Sound(song, streaming = True)
+        
+    def play_song(self):
+        if self.music:
+            self.music.stop(self.current_player)
+        
+        self.music = arcade.Sound(self.song, streaming = True)
         self.current_player = self.music.play(MUSIC_VOLUME)
         time.sleep(0.03)
+        
 
 def main():
     """ Main function """
