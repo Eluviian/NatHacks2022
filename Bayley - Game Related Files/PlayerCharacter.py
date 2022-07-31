@@ -15,6 +15,9 @@ class PlayerCharacter(arcade.Sprite):
 
         self.scale = CHARACTER_SCALING
         
+        self.caught = False
+        
+        
         main_path = "Player"
 
         # Load textures for idle standing

@@ -67,7 +67,6 @@ class EnemyCharacter(arcade.Sprite):
         
         
     def transfer_room(self, starting_room, goal_room):
-        print(self.room, goal_room)
         self.room = goal_room
         if starting_room == 0:
             if goal_room == 1:
