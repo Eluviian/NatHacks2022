@@ -8,7 +8,7 @@ MUSIC_VOLUME = 0.5
 COIN_SCALE = 0.5
 COIN_COUNT = 50
 CHARACTER_SCALING = 1.5
-ENEMY_SCALING = 3.0
+ENEMY_SCALING = 1.5
 
 # How fast to move, and how fast to run the animation
 PLAYER_MOVEMENT_SPEED = 2

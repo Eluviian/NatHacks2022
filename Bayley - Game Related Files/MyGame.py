@@ -128,6 +128,10 @@ class MyGame(arcade.Window):
             #end_game(False)
             self.continue_game = False
             self.background = arcade.load_texture("images\game_over.png")
+            self.song = "audio\Closing-In_Looping.mp3"
+            self.play_song()            
+            
+            
 
         # Move the player
         self.player.update()
@@ -229,9 +233,6 @@ class MyGame(arcade.Window):
         else:
             self.enemy.change_y = ENEMY_MOVEMENT_SPEED       
             
-    '''
-    def end_game(self,win):
-        self.con'''
         
         
     def play_song(self):
@@ -241,13 +242,15 @@ class MyGame(arcade.Window):
         self.music = arcade.Sound(self.song, streaming = True)
         self.current_player = self.music.play(MUSIC_VOLUME)
         time.sleep(0.03)
-        
+   
+       
 
 def main():
     """ Main function """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
+    window.music.stop(window.current_player)
 
 
 if __name__ == "__main__":

@@ -17,10 +17,11 @@ class EnemyCharacter(arcade.Sprite):
 
         self.scale = CHARACTER_SCALING
         
-        main_path = "Nurse"
+        main_path = "Monster"
 
         # Load textures for idle standing
         self.idle_textures = []
+        '''
         for direction in ["forward","left","right","back"]:
             self.idle_textures.append(f"{main_path}/{direction}0.png")
         
@@ -28,12 +29,25 @@ class EnemyCharacter(arcade.Sprite):
         
         # Load textures for walking
         self.walk_textures = []
-        for direction in ["forward","left","right","back"]:
+        for direction in ["forward","left","right","back]:
             for i in range(4):
                 texture = f"{main_path}/{direction}{i}.png"
                 self.walk_textures.append(texture)
 
-                   
+        '''
+        for i in ["01","04","07","10"]:
+            self.idle_textures.append(f"{main_path}/tile0{i}.png")
+        
+        # Load textures for walking
+        self.walk_textures = []
+        for i in range(10):
+            texture = f"{main_path}/tile00{i}.png"
+            self.walk_textures.append(texture)
+            
+        for i in [10,11]:
+            texture = f"{main_path}/tile0{i}.png"
+            self.walk_textures.append(texture)        
+            
             
             
 
@@ -64,6 +78,7 @@ class EnemyCharacter(arcade.Sprite):
         frame = self.cur_texture // UPDATES_PER_FRAME
         direction = self.character_face_direction
         self.texture = arcade.load_texture(self.walk_textures[4*direction + frame])
+        #print(direction,frame)
         
         
     def transfer_room(self, starting_room, goal_room):
