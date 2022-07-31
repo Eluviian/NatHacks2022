@@ -131,9 +131,6 @@ class graph_win(QWidget):
         self.data_max_len = self.sampling_rate * 600
         self.data = np.zeros((self.data_max_len, self.chan_num))
         self.cur_line = 0
-        
-        # init ab history variable
-        self.ab_history = np.zeros((self.chan_num,20))
 
         self.graphWidget = pg.GraphicsLayoutWidget()
 
@@ -146,9 +143,10 @@ class graph_win(QWidget):
         self._init_timeseries()
 
         self.timer = QTimer()
-        self.timer.setInterval(50)
+        self.timer.setInterval(100)
         self.timer.timeout.connect(self.update)
         self.timer.start()
+        self.last_time = time.time()
 
     def _init_timeseries(self):
         self.plots = list()
@@ -165,70 +163,52 @@ class graph_win(QWidget):
             curve = p.plot()
             self.curves.append(curve)
 
-    def get_ab_ratio(self, dataList):
-        
-        
-        fft_data = np.absolute(np.fft.fft(dataList)/len(dataList))
-        fft_freqs = np.fft.rfftfreq(len(dataList), 1/200)
-        
-        # print("fft_data", fft_data)
-        # print("fft_freqs", fft_freqs)
-        
-        alpha_inds =  np.where((fft_freqs >= 8) & (fft_freqs <= 12))[0]
-        beta_inds =  np.where((fft_freqs >= 13) & (fft_freqs <= 30))[0]
-        # print("alpha", alpha_inds)
-        # print("beta", beta_inds)
-        
-        alpha_power = np.mean(fft_data[alpha_inds])
-        beta_power = np.mean(fft_data[beta_inds])
-
-        #compute beta/alpha ratio
-        ratio = beta_power/alpha_power
-        
-        return ratio
-
-    
     def update(self):
-        logger.debug("Graph window is updating")
+        # t  = time.time()
+        # diff = t - self.last_time
+        # self.last_time = t
+        # logger.debug("Graph window is updating {}".format(diff))
 
         # this is data to be saved. It is only new data since our last call
-        # data = self.board.get_new_data()
+        data = self.board.get_new_data()
+        if len(data) == 0:
+            print("new data is empty")
         #print("Data1: {}".format(data))
         # save data to our csv super quick
-        # save_to_csv(
-        #     data, self.save_file, self.exg_channels, logger
-        # )
+        save_to_csv(
+            data, self.save_file, self.exg_channels, logger
+        )
         # note that the data objectwill porbably contain lots of dattathat isn't eeg
         # how much and what it is depends on the board. exg_channels contains the key for
         # what is and isn't eeg. We will ignore non eeg and not save it
 
-        # data_len = data.shape[1]
-        # if data_len + self.cur_line >= self.data_max_len:
-        #     # we need to roll over and start at the beginning of the file
-        #     self.data[self.cur_line : self.data_max_len, :] = data[
-        #         self.exg_channels, : self.data_max_len - self.cur_line
-        #     ].T
-        #     self.data[0 : data_len - (self.data_max_len - self.cur_line), :] = data[
-        #         self.exg_channels, self.data_max_len - self.cur_line :
-        #     ].T
-        #     self.cur_line = data_len - (self.data_max_len - self.cur_line)
-        # else:
-        #     self.data[self.cur_line : self.cur_line + data.shape[1], :] = data[
-        #         self.exg_channels, :
-        #     ].T
-        #     self.cur_line = self.cur_line + data.shape[1]
+        data_len = data.shape[1]
+        if data_len + self.cur_line >= self.data_max_len:
+            # we need to roll over and start at the beginning of the file
+            self.data[self.cur_line : self.data_max_len, :] = data[
+                self.exg_channels, : self.data_max_len - self.cur_line
+            ].T
+            self.data[0 : data_len - (self.data_max_len - self.cur_line), :] = data[
+                self.exg_channels, self.data_max_len - self.cur_line :
+            ].T
+            self.cur_line = data_len - (self.data_max_len - self.cur_line)
+        else:
+            self.data[self.cur_line : self.cur_line + data.shape[1], :] = data[
+                self.exg_channels, :
+            ].T
+            self.cur_line = self.cur_line + data.shape[1]
 
         # this is data to be graphed. It is the most recent data, of the length that we want to graph
         data = self.board.get_data_quantity(self.num_points)
-        # print("before shift", self.ab_history)
-        # sendingdata(data, self.exg_channels)
-        self.ab_history = np.roll(self.ab_history,-1)
-        # print("after shift", self.ab_history)
+        # print(data)
         
+        # print("Data 2: {}".format(data))
         for count, channel in enumerate(self.exg_channels):
             # plot timeseries
             if len(data[channel]) != 0:
                 DataFilter.detrend(data[channel], DetrendOperations.CONSTANT.value)
+            else:
+                print("data was empty")
             DataFilter.perform_bandpass(
                 data[channel],
                 self.sampling_rate,
@@ -265,12 +245,7 @@ class graph_win(QWidget):
                 FilterTypes.BUTTERWORTH.value,
                 0,
             )
-            ab_ratio = self.get_ab_ratio(data[channel])
-            self.ab_history[count,-1] = ab_ratio
-            self.curves[count].setData(self.ab_history[count])
-            # print("ratio history", self.ab_history)
-
-            # self.curves[count].setData(data[channel].tolist())
+            self.curves[count].setData(data[channel].tolist())
 
         self.curves[len(self.exg_channels)].setData(data[self.marker_channels].tolist())
         logger.debug(
