@@ -67,11 +67,10 @@ class MyGame(arcade.Window):
         self.clear()
         
         arcade.start_render()
-        arcade.draw_texture_rectangle(300,300,600,600,self.background)  
+        arcade.draw_texture_rectangle(300,300,600,600,self.background) 
         
         
-        
-        if self.room == 8:
+        if self.room == 8 and self.continue_game:
             if self.broken_mirror == False: 
                 unbroken_mirror_sprite = arcade.Sprite("images/before_mirror.png", scale=1.2, center_x = 535, center_y= 305)
                 unbroken_mirror_sprite.draw()
@@ -86,7 +85,8 @@ class MyGame(arcade.Window):
             self.player.draw()
             if self.enemy.room == self.room:
                 self.enemy.draw()
-            
+            #IMPORTANT - covers weird square on room 2 texture
+            arcade.draw_lrtb_rectangle_filled(550,600,50,0,arcade.color.BLACK)            
             #arcade.draw_lrtb_rectangle_filled(178,204,272,260,arcade.color.BLUSH)
             #arcade.draw_lrtb_rectangle_filled(387,427,140,100,arcade.color.BLUSH)
             #arcade.draw_lrtb_rectangle_filled(176,202,272,260,arcade.color.BLUSH)

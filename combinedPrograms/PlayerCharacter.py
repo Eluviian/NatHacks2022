@@ -139,6 +139,10 @@ class PlayerCharacter(arcade.Sprite):
                 room = 3
             else:
                 self.change_x = 0
+        ''' 
+        #WHYYYYY is this necessary??
+        if room == 8 and self.center_y > HALLWAY_BOTTOM:
+            self.change_y = 0'''
             
         # Idle animation
         if self.change_x == 0 and self.change_y == 0:
