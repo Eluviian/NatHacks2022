@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
         
 
         self.background = arcade.load_texture("Maps\exit_room.png")
-        self.room = 7
+        self.room = 0
         
         self.music = None
         self.song = "audio\Closing-In_Looping.mp3"
@@ -143,8 +143,10 @@ class MyGame(arcade.Window):
             self.continue_game = False
             self.broken_mirror = False
             self.background = arcade.load_texture("images\game_over.png")
-            self.song = "audio\Closing-In_Looping.mp3"
-            self.play_song()            
+            #self.song = "audio\Closing-In_Looping.mp3"
+            #self.play_song()  
+            self.music.stop(self.current_player)
+            
             
             
 
@@ -174,21 +176,23 @@ class MyGame(arcade.Window):
         '''
         if self.enemy_timer >= 200 and self.room != self.prev_room and self.enemy.chasing_player == False:
             self.enemy.room = self.room '''
-            
         
         
-        
+        #THIS WILL HAPPEN WHEN PLAYER IS FOCUSED (LOW ALPHA_BETA RATIO), instead of being on a timer    
         if self.enemy_timer == 200:
             
-            if self.room == 0 or self.room == 1 or self.room == 2:
+            if self.room == 1 or self.room == 2:
                 self.enemy.room = 8
                 #print("enemy is in room",self.enemy.room)
-            if self.room == 3 or self.room == 7 or self.room == 8:
+            if self.room == 3 or self.room == 7 or self.room == 8 or self.room == 0:
                 self.enemy.room = 1
                 #print("enemy is in room "+str(self.enemy.room))
+                '''
+            if self.room != 1 and self.enemy.room == 99:
+                self.enemy.room == 1'''
+                
           
-          
-        if self.enemy.room == self.room:
+        if self.enemy.room == self.room and self.continue_game:
             if self.song != "audio\Horror-NeverLookBack.mp3":
                 self.song = "audio\Horror-NeverLookBack.mp3"
                 self.play_song()
