@@ -165,7 +165,7 @@ class graph_win(QWidget):
             p.setMenuEnabled("left", False)
             p.showAxis("bottom", False)
             p.setMenuEnabled("bottom", False)
-            p.setYRange(0,1.5)
+            p.setYRange(0.5,2.5)
             if i == 0:
                 p.setTitle("TimeSeries Plot")
             self.plots.append(p)
@@ -190,7 +190,7 @@ class graph_win(QWidget):
         beta_power = np.mean(fft_data[beta_inds])
 
         #compute beta/alpha ratio
-        ratio = beta_power/alpha_power
+        ratio = alpha_power/beta_power
         
         return ratio
 

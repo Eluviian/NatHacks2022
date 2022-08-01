@@ -28,27 +28,25 @@ UNICORN = "Unicorn"
 def get_serial_port(board_id):
     """Gets the working COM port for the device on which this script
     is running.
-
     Args:
         board_id (Integer): Brainflow's board_id for the board which is trying to connect.
-
     Returns:
         String: The serial port to connect to the device, in the form "COM#". If no port exists,
         an empty string is returned.
     """
     params = BrainFlowInputParams()
-    # for i in range(10):
-    params.serial_port = "COM16"
-        # board = BoardShim(board_id, params)
-        # try:
-        #     board.prepare_session()
-        # except brainflow.board_shim.BrainFlowError:
-        #     # This port doesn't work, continue trying
-        #     pass
-        # else:
-        #     # didn't have the bad com port exeption
-        #     BoardShim.release_all_sessions()
-    return params.serial_port
+    for i in range(10):
+        params.serial_port = "COM" + str(i)
+        board = BoardShim(board_id, params)
+        try:
+            board.prepare_session()
+        except brainflow.board_shim.BrainFlowError:
+            # This port doesn't work, continue trying
+            pass
+        else:
+            # didn't have the bad com port exeption
+            BoardShim.release_all_sessions()
+            return params.serial_port
 
     BoardShim.release_all_sessions()
     return ""
@@ -169,12 +167,10 @@ class Board(BoardShim):
 
 def get_board_id(data_type, hardware, model):
     """Gets the brainflow board_id from the given arguments
-
     Args:
         data_type (String): A string of either "Task live" or "Task simulate"
         hardware (String): A string of either "Muse" or "OpenBCI"
         model (String): A string of either "Muse 2", "Muse S", "Ganglion", "Cyton", or "Cyton-Daisy"
-
     Returns:
         int: The board_id that brainflow uses internally to determine board type
     """
