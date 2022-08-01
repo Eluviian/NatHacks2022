@@ -96,28 +96,34 @@ class EnemyCharacter(arcade.Sprite):
         if starting_room == 1:
             if goal_room == 0:
                 self.center_x = 278
-                self.center_y = HALLWAY_BOTTOM + 1
+                self.center_y = HALLWAY_BOTTOM - 20
             if goal_room == 2:
                 self.center_x = 1
+                self.center_y = HALLWAY_TOP - 50
         if starting_room == 2:
             if goal_room == 0:
                 self.center_x = 393
-                self.center_y = HALLWAY_BOTTOM + 1
+                self.center_y = HALLWAY_BOTTOM - 20
             if goal_room == 1:
                 self.center_x = 1
+                self.center_y = HALLWAY_TOP - 50
             if goal_room == 3:
                 self.center_x = 1
+                self.center_y = HALLWAY_TOP - 50
         if starting_room == 3:
             if goal_room == 0:
                 self.center_x = 178
                 self.center_y = HALLWAY_BOTTOM + 1
             if goal_room == 2:
                 self.center_x = SCREEN_WIDTH - 1
+                self.center_y = HALLWAY_TOP - 50
             if goal_room == 7:
                 self.center_x = 1
+                self.center_y = HALLWAY_TOP - 50
         if starting_room == 7:
             if goal_room == 3:
                 self.center_x = SCREEN_WIDTH - 1
+                self.center_y = HALLWAY_TOP - 50
             if goal_room == 8:
                 self.center_x = 189
                 self.center_y = HALLWAY_TOP - 1

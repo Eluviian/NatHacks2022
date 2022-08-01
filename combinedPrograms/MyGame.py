@@ -126,26 +126,22 @@ class MyGame(arcade.Window):
         #reading from the file
         with open('ratios.txt', 'r') as f:
             ratioString = (f.readline().split('\n'))
-        print("ratio string is ", ratioString)
-        '''
-        if (ratioString != ""):
-            ratioList = float(ratioString.split('\n')[0])'''
-        '''       
-        for i in ratioString:
-            print (i)'''
-            
+      
         if ratioString[0] != '':
-            print("ratio string 0",ratioString[0])
+            #print this one
+            '''print("ratio string 0",ratioString[0])
+            '''
             if float(ratioString[0]) > 0.1:
-                print("true")
+                pass
+                #print("true")
                 #self.room = 0
-        # ratioFloat = ratioList
-        # print(ratioFloat)
+
         
         #check of player is caught
         if arcade.check_for_collision(self.enemy,self.player) and self.room == self.enemy.room:
             #end_game(False)
             self.continue_game = False
+            self.broken_mirror = False
             self.background = arcade.load_texture("images\game_over.png")
             self.song = "audio\Closing-In_Looping.mp3"
             self.play_song()            
