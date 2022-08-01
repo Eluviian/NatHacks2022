@@ -1,5 +1,6 @@
 absl-py==1.0.0
 astunparse==1.6.3
+arcade==2.6.15
 brainflow==4.9.3
 cachetools==5.1.0
 certifi==2022.5.18.1
