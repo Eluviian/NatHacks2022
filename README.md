@@ -27,4 +27,4 @@ To play the video game with concentration detection, leave the **main_menu.py** 
 
 ## Game Demo Video
 
-[![IMAGE ALT TEXT HERE](https://ak.picdn.net/shutterstock/videos/1065351895/thumb/11.jpg?ip=x480)](https://www.youtube.com/watch?v=NAyh81DpckE)
+[![IMAGE ALT TEXT HERE](https://ak.picdn.net/shutterstock/videos/1065351895/thumb/11.jpg?ip=x480)](https://www.youtube.com/watch?v=GB4szSZn8Jw)
