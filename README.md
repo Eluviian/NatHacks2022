@@ -3,7 +3,7 @@ This project uses [NATHacks 2022 - Python Boiler](https://github.com/neuralberta
 
 ## Team Members
 - Bayley
-- Ajiit
+- Ajiitesh
 - Jiachen
 
 
